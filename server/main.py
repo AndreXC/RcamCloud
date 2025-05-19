@@ -1,0 +1,163 @@
+# # server/main.py
+# from fastapi import FastAPI, UploadFile, File, HTTPException
+# from fastapi.responses import FileResponse
+# import os
+# from pydantic import BaseModel
+# import hashlib
+
+# app = FastAPI()
+# UPLOAD_DIR = "server/storage"
+# os.makedirs(UPLOAD_DIR, exist_ok=True)
+
+# hash_registry = {}
+
+
+# class FileHashRequest(BaseModel):
+#     filename: str
+#     sha256: str
+
+
+# @app.post("/check_hash")
+# def check_hash(info: FileHashRequest):
+#     stored_hash = hash_registry.get(info.filename)
+#     return {"match": stored_hash == info.sha256}
+
+# @app.post("/upload")
+# async def upload_file(file: UploadFile = File(...)):
+#     contents = await file.read()
+#     file_path = os.path.join(UPLOAD_DIR, file.filename)
+    
+#     sha256 = hashlib.sha256(contents).hexdigest()
+    
+#     # salvar arquivo
+#     with open(file_path, "wb") as f:
+#         f.write(contents)
+    
+#     hash_registry[file.filename] = sha256
+#     return {"status": "uploaded", "hash": sha256}
+
+
+# @app.get("/download/{filename}")
+# def download_file(filename: str):
+#     file_path = os.path.join(UPLOAD_DIR, filename)
+#     return FileResponse(file_path)
+
+# @app.get("/list")
+# def list_files():
+#     return {"files": os.listdir(UPLOAD_DIR)}
+
+
+
+# @app.delete("/delete/{filename}")
+# def delete_file(filename: str):
+#     file_path = os.path.join(UPLOAD_DIR, filename)
+
+#     if not os.path.isfile(file_path):
+#         raise HTTPException(status_code=404, detail="Arquivo não encontrado")
+
+#     try:
+#         os.remove(file_path)
+#         hash_registry.pop(filename, None)
+#         return {"status": "deleted", "filename": filename}
+#     except Exception as e:
+#         raise HTTPException(status_code=500, detail=f"Erro ao deletar arquivo: {str(e)}") 
+
+
+from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi.responses import FileResponse
+from pydantic import BaseModel
+import os
+import hashlib
+import shutil
+
+app = FastAPI()
+
+UPLOAD_DIR = "server/storage"
+os.makedirs(UPLOAD_DIR, exist_ok=True)
+
+hash_registry = {}
+
+
+class FileHashRequest(BaseModel):
+    filename: str  # agora é caminho relativo (ex: subpasta/arquivo.txt)
+    sha256: str
+
+
+class DirectoryRequest(BaseModel):
+    path: str  # caminho relativo do diretório
+
+
+@app.post("/check_hash")
+def check_hash(info: FileHashRequest):
+    stored_hash = hash_registry.get(info.filename)
+    return {"match": stored_hash == info.sha256}
+
+
+@app.post("/upload")
+async def upload_file(file: UploadFile = File(...)):
+    rel_path = file.filename.replace("\\", "/")  # Normaliza para Unix-like
+    file_path = os.path.join(UPLOAD_DIR, rel_path)
+
+    os.makedirs(os.path.dirname(file_path), exist_ok=True)
+
+    contents = await file.read()
+    sha256 = hashlib.sha256(contents).hexdigest()
+
+    with open(file_path, "wb") as f:
+        f.write(contents)
+
+    hash_registry[rel_path] = sha256
+    return {"status": "uploaded", "hash": sha256, "path": rel_path}
+
+
+@app.post("/mkdir")
+def create_directory(data: DirectoryRequest):
+    dir_path = os.path.join(UPLOAD_DIR, data.path)
+    try:
+        os.makedirs(dir_path, exist_ok=True)
+        return {"status": "created", "directory": data.path}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erro ao criar diretório: {str(e)}")
+
+
+@app.delete("/delete/{filepath:path}")
+def delete_file(filepath: str):
+    target_path = os.path.join(UPLOAD_DIR, filepath)
+
+    if os.path.isdir(target_path):
+        try:
+            shutil.rmtree(target_path)
+            return {"status": "deleted", "directory": filepath}
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Erro ao deletar diretório: {str(e)}")
+
+    elif os.path.isfile(target_path):
+        try:
+            os.remove(target_path)
+            hash_registry.pop(filepath, None)
+            return {"status": "deleted", "file": filepath}
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Erro ao deletar arquivo: {str(e)}")
+    else:
+        raise HTTPException(status_code=404, detail="Arquivo ou diretório não encontrado")
+
+
+@app.get("/download/{filepath:path}")
+def download_file(filepath: str):
+    file_path = os.path.join(UPLOAD_DIR, filepath)
+
+    if not os.path.isfile(file_path):
+        raise HTTPException(status_code=404, detail="Arquivo não encontrado")
+
+    return FileResponse(file_path, filename=os.path.basename(file_path))
+
+
+@app.get("/list")
+def list_files():
+    file_list = []
+    for root, _, files in os.walk(UPLOAD_DIR):
+        for file in files:
+            rel_dir = os.path.relpath(root, UPLOAD_DIR)
+            rel_file = os.path.normpath(os.path.join(rel_dir, file))
+            file_list.append(rel_file.replace("\\", "/"))
+    return {"files": file_list}
