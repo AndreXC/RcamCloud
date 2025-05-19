@@ -111,3 +111,5 @@ class Handler(FileSystemEventHandler):
 if __name__ == "__main__":
     watcher = Watcher(FOLDER)
     watcher.run()
+
+print('teste')
