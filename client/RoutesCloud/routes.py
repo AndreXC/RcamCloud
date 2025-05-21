@@ -1,7 +1,8 @@
 from utils.CalcHash.calcHash import calculate_file_hash
 import requests
 from utils.ServerConfig.serverConf import serverConf
-
+from log.log import LogRequest
+import traceback
 
 class routesLink:
     def __init__(self):
@@ -19,7 +20,7 @@ class routesLink:
 class routes:
     def __init__(self):
         self.routesLink = routesLink()
-        
+    
     def SendRequest(self, route, method, data=None):
         try:
             if method == "GET":
@@ -34,14 +35,17 @@ class routes:
             response.raise_for_status()
             return response.json()
         except requests.exceptions.RequestException as e:
-            print(f"[ERRO AO ENVIAR REQUISIÇÃO] {e}")
+            error_message = f"{str(e)}\n{traceback.format_exc()}"
+            LogRequest(error_message, 'cliente').request_log()
             return None
-      
+
     def _create_directory_on_server(self, rel_path):
         try:
             response = self.SendRequest(self.routesLink.routeCreatedirectory, "POST", {"path": rel_path})            
             print(f"[DIRETÓRIO CRIADO NO SERVIDOR] {rel_path}")
         except Exception as e:
+            error_message = f"{str(e)}\n{traceback.format_exc()}"
+            LogRequest(error_message, 'cliente').request_log()
             print(f"[ERRO AO CRIAR DIRETÓRIO] {e}")
             
     def __checkHashRoute__(self, filepath, rel_path):
@@ -54,7 +58,8 @@ class routes:
             })
             return response.get("match", False)
         except Exception as e:
-            print(f"[ERRO AO VERIFICAR HASH] {e}")
+            error_message = f"{str(e)}\n{traceback.format_exc()}"
+            LogRequest(error_message, 'cliente').request_log()
             return False
     
     def _check_and_upload(self, filepath, rel_path):
@@ -70,6 +75,8 @@ class routes:
             else:
                 print(f"[SINCRONIZADO] {rel_path}")
         except Exception as e:
+            error_message = f"{str(e)}\n{traceback.format_exc()}"
+            LogRequest(error_message, 'cliente').request_log()
             print(f"[ERRO DE REDE] {e}")
             
     def _deleteFile(self, rel_path):
@@ -77,6 +84,9 @@ class routes:
             response = self.SendRequest(self.routesLink.routeDelete, "DELETE", {"path": rel_path})
             print(f"[REMOVIDO DO SERVIDOR] {rel_path}")
         except Exception as e:
+            error_message = f"{str(e)}\n{traceback.format_exc()}"
+            LogRequest(error_message, 'cliente').request_log()
             print(f"[ERRO AO DELETAR] {e}")
+    
         
-        
+

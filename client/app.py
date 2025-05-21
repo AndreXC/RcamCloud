@@ -205,7 +205,9 @@
 
 import os
 import flet as ft
-
+from auth.Login.login import Login
+from auth.CheckAuthToken.checkAuthToken import checkAuthToken
+from models.usuario.session import User_session  
 
 class CloudSyncApp:
     def __init__(self, page: ft.Page):
@@ -273,9 +275,21 @@ class CloudSyncApp:
         )
 
     def check_token(self):
-        if os.path.exists(self.token_path):
-            self.show_snackbar("Token encontrado. Redirecionando...", success=True)
-            # Aqui você pode redirecionar para a tela principal
+        instanceCheckAuthToken = checkAuthToken()
+        status, mensagem = instanceCheckAuthToken.request_token()     
+        if status:
+            User = User_session.UserObject
+            print(User.email)
+            self.page.snack_bar = ft.SnackBar(
+                ft.Text("Token encontrado. Redirecionando..."),
+                open=True
+            )
+            self.page.snack_bar.bgcolor = "#5CB85C"
+            self.page.update()
+            self.page.controls.clear()
+            self.page.add(
+                ft.Text("Tela Principal", size=32, weight="bold", color="#2D3E50")
+            )
         else:
             self.show_login()
 
@@ -294,15 +308,17 @@ class CloudSyncApp:
         def login_clicked(e):
             username = user_input.value.strip()
             password = password_input.value.strip()
-            hostname = "teste"
-
+            
             try:
                 # Simulação de sucesso
-                status = 200
-                if status == 200:
+                instanceLogin = Login(username, password)
+                status, message = instanceLogin.authenticate()
+            
+                
+                if status and message == '':
                     self.show_code_input()
                 else:
-                    self.show_snackbar("Usuário ou senha inválidos", success=False)
+                    self.show_snackbar(message, success=False)
             except Exception as ex:
                 self.show_snackbar(f"Erro: {str(ex)}", success=False)
 

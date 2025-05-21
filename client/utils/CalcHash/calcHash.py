@@ -1,5 +1,6 @@
 import hashlib
-
+import traceback
+from log.log import LogRequest
 def calculate_file_hash(filepath):
     try:
         sha256_hash = hashlib.sha256()
@@ -8,6 +9,8 @@ def calculate_file_hash(filepath):
                 sha256_hash.update(byte_block)
         return sha256_hash.hexdigest()
     except Exception as e:
+        error_message = f"{str(e)}\n{traceback.format_exc()}"
+        LogRequest(error_message, 'cliente').request_log()
         print(f"[ERRO AO CALCULAR HASH]: {e} - {filepath}")
     
 
