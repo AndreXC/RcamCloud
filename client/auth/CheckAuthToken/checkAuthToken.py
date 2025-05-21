@@ -12,25 +12,29 @@ class checkAuthToken:
         self.instanceTokenManager = TokenManager()
     
     def request_token(self):
-        token = self.instanceTokenManager.get_token()
+        token:str = self.instanceTokenManager.get_token()
         if token == '':
             return False, 'token não encontrado'
         
+        tokenDispositivo:str = GetToken().generate_token()
         payload = {
-            'token_dispositivo': GetToken().generate_token(),
+            'token_dispositivo':tokenDispositivo,
             'token': token          
         }
-              
         self.headers = {
             'Content-Type': 'application/x-www-form-urlencoded'
         }
+        
         try:
             response = requests.post(self.routeToken, data=payload, headers=self.headers)
             if response.status_code == 200:
                 if response.json().get('token_valido') == True:
                     if 'tokenNovo' in response.json():
                         self.instanceTokenManager.set_token(response.json().get('tokenNovo'))
+                        
+                    #CRIANDO A SESSÃO DO USUÁRIO   
                     instanceUsuario:Usuario = Usuario
+                    #variavel de sessão do usuário, apos sua instancia, pode ser chamada em qualquer lugar
                     User_session.UserObject = instanceUsuario.from_dict(response.json().get('usuario'))
                     return True, ''
                 return False, response.json().get('error')
