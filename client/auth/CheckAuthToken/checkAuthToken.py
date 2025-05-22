@@ -14,7 +14,7 @@ class checkAuthToken:
     def request_token(self):
         token:str = self.instanceTokenManager.get_token()
         if token == '':
-            return False, 'token não encontrado'
+            return {'status': False, 'error': '', 'message': 'Token não encontrado.'} 
         
         tokenDispositivo:str = GetToken().generate_token()
         payload = {
@@ -36,12 +36,12 @@ class checkAuthToken:
                     instanceUsuario:Usuario = Usuario
                     #variavel de sessão do usuário, apos sua instancia, pode ser chamada em qualquer lugar
                     User_session.UserObject = instanceUsuario.from_dict(response.json().get('usuario'))
-                    return True, ''
-                return False, response.json().get('error')
+                    return {'status': True, 'error': '', 'message': 'Token válido'}
+                return {'status': False, 'error': response.json().get('error'), 'message': 'erro retorno api'}
             else:
                 error_message= response.json().get('error')
                 LogRequest(error_message, 'cliente').request_log()
-                return False, error_message
+                return {'status': False, 'error': response.json().get('error'), 'message': 'Servidor esta fora'}
         except requests.RequestException as e:
             error_message = f"{str(e)}\n{traceback.format_exc()}"
             LogRequest(error_message, 'cliente').request_log()
