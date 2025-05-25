@@ -2,6 +2,7 @@
 import flet as ft
 from auth.Login.login import Login
 from ..dashboard.dash import Dashboard
+import os
 
 class LoginApp:
     def __init__(self, page: ft.Page):
@@ -12,15 +13,16 @@ class LoginApp:
         self.configure_window_size_aligment()
         self.Layout()
         self.configure_appbar()
-        self.deshboartela:Dashboard = Dashboard
+        self.show_login()
+        # self.deshboartela:Dashboard = Dashboard
 
     def configure_window_size_aligment(self):
-        self.page.window_width = 600
-        self.page.window_height = 600
-        self.page.window_resizable = False
-        self.page.window_maximizable = False
-        self.page.window_title_bar_hidden = True
-        self.page.window_center()
+        self.page.window.width = 600
+        self.page.window.height = 600
+        self.page.window.resizable = False
+        self.page.window.maximizable = False
+        self.page.window.title_bar_hidden = True
+        self.page.window.center()
     
     def Layout(self):
         self.page.vertical_alignment = ft.MainAxisAlignment.CENTER
@@ -32,14 +34,17 @@ class LoginApp:
             "Roboto": "https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap",
             "Poppins": "https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap"
         } 
-        
+       
+    def exit(self, e):
+        self.page.window.close()
+   
     def configure_appbar(self):
         self.page.appbar = ft.AppBar(
             leading_width=0,
             title=ft.Container(
                 content=ft.Row(
                     controls=[
-                        ft.Icon(ft.icons.CLOUD, color="#2D3E50", size=35),
+                        ft.Icon(ft.Icons.CLOUD, color="#2D3E50", size=35),
                         ft.Text("CloudSync", color="#2D3E50", weight="bold", size=25)
                     ],
                     spacing=8,
@@ -53,10 +58,10 @@ class LoginApp:
             actions=[
                 ft.Container(
                     content=ft.IconButton(
-                        icon=ft.icons.CLOSE,
+                        icon=ft.Icons.CLOSE,
                         icon_color="#2D3E50",
                         tooltip="Fechar",
-                        on_click=lambda e: self.page.window_close()
+                        on_click=self.exit
                     ),
                     margin=ft.margin.only(right=12)
                 )
@@ -88,7 +93,7 @@ class LoginApp:
                     self.password_input,
                     ft.ElevatedButton(
                         text="Entrar",
-                        on_click=self.login_clicked(),
+                        on_click=self.login_clicked,
                         width=320,
                         style=ft.ButtonStyle(
                             bgcolor="#2D3E50", color="white",
@@ -106,17 +111,28 @@ class LoginApp:
         self.page.update()
 
     def login_clicked(self, e):
-            username = self.user_input.value.strip()
-            password = self.password_input.value.strip()
-            try:
-                instanceLogin = Login(username, password)
-                status, message = instanceLogin.authenticate()
-                if status and message == '':
-                    self.show_code_input()
-                else:
-                    self.show_snackbar(message, success=False)
-            except Exception as ex:
-                self.show_snackbar(f"Erro: {str(ex)}", success=False)
+        inputErrorRequeriment = []
+        username = self.user_input.value.strip()
+        if username == '':
+            inputErrorRequeriment.append('Email')
+        password = self.password_input.value.strip()
+        if password == '':
+            inputErrorRequeriment.append('Senha')
+            
+        if not len(inputErrorRequeriment) == 0:
+            mensagemRequeriments = [f'Preencha o campo {i}' for i in inputErrorRequeriment][0]
+            self.show_snackbar(mensagemRequeriments, success=False)
+            return
+    
+        try:
+            instanceLogin = Login(username, password)
+            status, message = instanceLogin.authenticate()
+            if status and message == '':
+                self.show_code_input()
+            else:
+                self.show_snackbar(message, success=False)
+        except Exception as e:
+            self.show_snackbar(f"Erro: {str(e)}", success=False)
 
     def show_code_input(self):
         self.page.controls.clear()
@@ -159,9 +175,9 @@ class LoginApp:
             print(f"Código inserido: {code}")
 
     def show_snackbar(self, message: str, success: bool = True):
-        self.page.snack_bar = ft.SnackBar(
+        self.page.open(ft.SnackBar(
             ft.Text(message, color="white"),
             bgcolor="#5CB85C" if success else "#D9534F",
             open=True
-        )
+        ))
         self.page.update()

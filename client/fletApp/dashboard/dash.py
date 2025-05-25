@@ -49,8 +49,8 @@ class Dashboard:
                         style=ft.ButtonStyle(
                             shape=ft.RoundedRectangleBorder(radius=8),
                             padding=ft.Padding(12, 12, 12, 12),
-                            color=ft.colors.WHITE,
-                            bgcolor=ft.colors.with_opacity(0.1, ft.colors.WHITE),
+                            color=ft.Colors.WHITE,
+                            bgcolor=ft.Colors.with_opacity(0.1, ft.Colors.WHITE),
                             overlay_color="#3D566E"
                         )
                     ),
@@ -93,7 +93,7 @@ class Dashboard:
                 controls=[
                     ft.Text(f"Olá, {self.user.nome}!", size=24, weight="bold", color="#2D3E50"),
                     ft.Container(expand=True),
-                    ft.Icon(ft.icons.ACCOUNT_CIRCLE, size=32, color="#2D3E50"),
+                    ft.Icon(ft.Icons.ACCOUNT_CIRCLE, size=32, color="#2D3E50"),
                 ],
                 alignment=ft.MainAxisAlignment.SPACE_BETWEEN
             ),

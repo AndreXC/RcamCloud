@@ -27,21 +27,39 @@ class checkAuthToken:
         
         try:
             response = requests.post(self.routeToken, data=payload, headers=self.headers)
-            if response.status_code == 200:
-                if response.json().get('token_valido') == True:
-                    if 'tokenNovo' in response.json():
-                        self.instanceTokenManager.set_token(response.json().get('tokenNovo'))
-                        
-                    #CRIANDO A SESSÃO DO USUÁRIO   
-                    instanceUsuario:Usuario = Usuario
-                    #variavel de sessão do usuário, apos sua instancia, pode ser chamada em qualquer lugar
-                    User_session.UserObject = instanceUsuario.from_dict(response.json().get('usuario'))
-                    return {'status': True, 'error': '', 'message': 'Token válido'}
-                return {'status': False, 'error': response.json().get('error'), 'message': 'erro retorno api'}
-            else:
-                error_message= response.json().get('error')
-                LogRequest(error_message, 'cliente').request_log()
-                return {'status': False, 'error': response.json().get('error'), 'message': 'Servidor esta fora'}
+            match response.status_code:
+                case 200:
+                    if response.json().get('token_valido') == True:
+                        if 'tokenNovo' in response.json():
+                            self.instanceTokenManager.set_token(response.json().get('tokenNovo'))
+                
+                        #CRIANDO A SESSÃO DO USUÁRIO   
+                        instanceUsuario:Usuario = Usuario
+                        #variavel de sessão do usuário, apos sua instancia, pode ser chamada em qualquer lugar
+                        User_session.UserObject = instanceUsuario.from_dict(response.json().get('usuario'))
+                        return {'status': True, 'error': '', 'message': 'Token válido'}
+                case 400:
+                    error_message = response.json().get('error')
+                    parametrosAusentes = response.json().get('parametros')
+                    LogRequest(error_message, 'cliente').request_log()
+                    return {'status': False, 'error': error_message, 'message': f'Parametros ausentes: {parametrosAusentes}'}
+            
+                case 401:
+                    error_message = response.json().get('error')
+                    LogRequest(error_message, 'cliente').request_log()
+                    return {'status': False, 'error': response.json().get('error'), 'message': 'Token inválido ou não autorizado'}
+                
+                
+                case 403:
+                    error_message = response.json().get('error')
+                    LogRequest(error_message, 'cliente').request_log()
+                    return {'status': False, 'error': error_message, 'message': 'Usuário não encontrado para este token'}
+            
+                case 500:
+                    error_message = response.json().get('error')
+                    LogRequest(error_message, 'cliente').request_log()
+                    return {'status': False, 'error': error_message, 'message': 'Erro no servidor'}
+                
         except requests.RequestException as e:
             error_message = f"{str(e)}\n{traceback.format_exc()}"
             LogRequest(error_message, 'cliente').request_log()
