@@ -38,8 +38,7 @@ class Login:
             match response.status_code:
                 case 200:
                     if response.json().get('status') == 'sucesso':
-                        token = response.json().get('token')
-                        self.InstanceTokenManager.set_token(token)
+                        # self.InstanceTokenManager.set_token(token)
                         return True, ''
                     else:
                         mensagemRetorno = response.json().get('error')
