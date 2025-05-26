@@ -13,7 +13,7 @@ def main(page: ft.Page):
             LoginApp(page=page)
     else:
         if response['error']:
-            LogRequest().request_log(response['error'], 'client')
+            LogRequest(response['error'], 'client').request_log()
         LoginApp(page=page)
         
 ft.app(target=main)
