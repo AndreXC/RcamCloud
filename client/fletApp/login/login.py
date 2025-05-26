@@ -18,7 +18,7 @@ class LoginApp:
 
         self.page.vertical_alignment = ft.MainAxisAlignment.CENTER
         self.page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
-        self.page.title = "CloudSync"
+        self.page.title = "RcamCloudSync"
         self.page.theme_mode = ft.ThemeMode.LIGHT
         self.page.bgcolor = self.bgColor
         self.page.fonts = {
@@ -33,7 +33,7 @@ class LoginApp:
                 content=ft.Row(
                     controls=[
                         ft.Icon(ft.Icons.CLOUD, color="#2D3E50", size=35),
-                        ft.Text("CloudSync", color="#2D3E50", weight="bold", size=25)
+                        ft.Text("RcamCloudSync", color="#2D3E50", weight="bold", size=25)
                     ],
                     spacing=8,
                     vertical_alignment=ft.CrossAxisAlignment.CENTER

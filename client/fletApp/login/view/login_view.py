@@ -1,6 +1,6 @@
 import flet as ft
 from auth.Login.login import Login
-from notification.notification import SnackNotification
+from ...notification.notification import SnackNotification
 
 class LoginView:
     def __init__(self, page: ft.Page, on_success):
