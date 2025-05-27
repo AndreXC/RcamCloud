@@ -3,8 +3,6 @@ import requests
 from utils.TokenJson.tokenJson import TokenManager
 import traceback
 from log.log import LogRequest
-from models.usuario.usuario import Usuario
-from models.usuario.session import User_session  
 from ..CheckAuthToken.checkAuthToken import checkAuthToken
 
 class checkAuth2f:

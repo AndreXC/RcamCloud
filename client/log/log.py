@@ -31,7 +31,7 @@ class LogRequest:
             response = requests.post(self.url_api, json=payload, headers=headers, timeout=10)
             response.raise_for_status()
         except requests.exceptions.RequestException as e:
-            LogErroArq(self.mensagem_erro, self.tipo, str(e)).logar_erro()
+                LogErroArq(self.mensagem_erro, self.tipo, str(e)).logar_erro()
 
 
 class LogErroArq:
@@ -59,4 +59,5 @@ class LogErroArq:
             if self.erro != None:
                 log_file.write(f"{self.tipo} - {self.data_atual} - {self.mensagem_erro} - {self.erro}\n")
             log_file.write(f"{self.tipo} - {self.data_atual} - {self.mensagem_erro} - cliente: {token}\n")
+            
             

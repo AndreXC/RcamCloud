@@ -8,7 +8,6 @@ import re
 class Login:
     def __init__(self, email:str, password:str):
         self.routeAuth = "https://rcamgeo.com.br/teste2/api/authUser.php"
-        self.routeToken = "https://rcamgeo.com.br/teste2/api/validTokenUser.php"
         self.email:str = email
         self.password:str = password
         self.tokeuser:str = str(GetToken().generate_token())
@@ -23,7 +22,7 @@ class Login:
             return re.match(pattern, email) is not None
         
         if not is_valid_email(self.email):
-            return False, 'Formato de e-mail inválido. Por favor, insira um e-mail válido.'
+            return {'status': False, 'error': '', 'message': 'informe um email válido.'}
         
         payload = {
             'email': self.email,
@@ -38,21 +37,20 @@ class Login:
             match response.status_code:
                 case 200:
                     if response.json().get('status') == 'sucesso':
-                        # self.InstanceTokenManager.set_token(token)
-                        return True, ''
+                        return {'status': True, 'error': '', 'message': 'Login realizado com sucesso.'}
                     else:
                         mensagemRetorno = response.json().get('error')
-                        return False, mensagemRetorno
+                        return {'status': False, 'error': mensagemRetorno, 'message': 'Erro ao realizar login.'}
                 case 400:
                     error_message = response.json().get('error')
-                    return False, error_message
+                    return {'status': False, 'error': error_message, 'message': f'Parametros ausentes: {response.json().get("detalhes")}'}
                 case 401:
                     messagemRetorno = response.json().get('error')
-                    return False, messagemRetorno
+                    return {'status': False, 'error': messagemRetorno, 'message': 'Email ou senha inválidos.'}
                 case 500:
                     mensagemErro = response.json().get('error')
                     LogRequest(mensagemErro, 'cliente').request_log()
-                    return False, 'Estamos Com problemas no servidor, tente mais tarde. Entre em contato com o suporte.'
+                    return {'status': False, 'error': mensagemErro, 'message': 'Erro no servidor interno'}
                 
         except requests.RequestException as e:
            error_message = f"{str(e)}\n{traceback.format_exc()}"

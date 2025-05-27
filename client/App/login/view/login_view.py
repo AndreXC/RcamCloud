@@ -1,6 +1,7 @@
 import flet as ft
 from auth.Login.login import Login
 from ...notification.notification import SnackNotification
+from  log.log import LogRequest
 
 class LoginView:
     def __init__(self, page: ft.Page, on_success):
@@ -58,14 +59,16 @@ class LoginView:
             SnackNotification(self.page, ft.Text(mensagem, color='white'), False)
             self.page.update()
             return
-
+        
         try:
             instanceLogin = Login(username, password)
-            status, mensagem = instanceLogin.authenticate()
-            if status:
+            response = instanceLogin.authenticate()
+            if response['status']:
                 self.on_success()
             else:
-                SnackNotification(self.page, ft.Text(mensagem, color='white'), False)                
+                if response['error']:
+                    LogRequest(response['error'], 'cliente').request_log()
+                SnackNotification(self.page, ft.Text(response['message'], color='white'), False)                
                 self.page.update()
         except Exception as ex:
             SnackNotification(self.page, ft.Text(ex, color='white'), False)

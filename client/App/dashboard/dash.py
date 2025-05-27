@@ -13,6 +13,10 @@ class Dashboard:
         self.page.spacing = 0
         self.page.theme_mode = "light"
         self.page.scroll = "auto"
+        page.window.width = 1000
+        page.window.height = 600
+        page.window.resizable = True
+
 
         self.sidebar = self._build_sidebar()
         self.content = self._build_content()
@@ -124,6 +128,7 @@ class Dashboard:
         )
 
     def _menu_home_clicked(self, e):
+        print('ola')
         self._alert("Você clicou em Início!")
 
     def _menu_profile_clicked(self, e):
@@ -136,5 +141,6 @@ class Dashboard:
         self._alert("Logout! Encerrar sessão...")
 
     def _alert(self, msg):
-        self.page.snack_bar = ft.SnackBar(ft.Text(msg), bgcolor="#5CB85C", open=True)
+        print(msg)
+        self.page.open = ft.SnackBar(ft.Text(msg,color='black'), bgcolor="#5CB85C", open=True)
         self.page.update()
