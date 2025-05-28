@@ -19,3 +19,12 @@ CREATE TABLE IF NOT EXISTS logs (
 
 ALTER TABLE logs ADD COLUMN tipo ENUM('cliente', 'server') NOT NULL DEFAULT 'cliente';
 
+
+
+#server
+CREATE TABLE file_hashes (
+    id SERIAL PRIMARY KEY,
+    filename TEXT UNIQUE NOT NULL,
+    hash TEXT NOT NULL,
+    uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
