@@ -12,6 +12,7 @@ class RoutesServer:
         self.routeDelete = f"{self.server_url}/delete"
         self.routeCreateDirectory = f"{self.server_url}/mkdir"
         self.routeCheckHash = f"{self.server_url}/check_hash"
+        self.DownloadAllArq  = f"{self.server_url}/DownloadAllArq"
         
 
 
