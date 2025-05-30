@@ -5,18 +5,25 @@ from log.log import LogRequest
 from ..CheckHashRouteOnServer.CheckHash import checkHash
 
 
-class Upload:
+class UploadFiles:
     def __init__(self, ):
         self.routeUpload = RoutesServer().routeUpload
         self.checkHashRoute:checkHash = checkHash()
     
     def request(self, filepath, rel_path):
         try:
+            if not filepath:
+                return {'status': False, 'error': '', 'message': 'O caminho do arquivo está vazio.'}
+
+            if not rel_path:
+                return {'status': False, 'error': '', 'message': 'O caminho relativo do arquivo está vazio.'}
+            
+            
             dataHash = self.checkHashRoute.Request(filepath, rel_path)
             status = dataHash.get('status')
-            
-            if dataHash.get('status'):
-                if dataHash.get('match'):
+            if status:
+                Amatch= dataHash.get('match') 
+                if Amatch:
                     args = {
                         'file': (rel_path, open(filepath, "rb"))
                     }                 

@@ -10,6 +10,9 @@ class DownloadFiles:
 
     def request(self, file):
         try:
+            if not file:
+                return {'status': False, 'error': 'Nenhum arquivo especificado para download.', 'message': 'Erro ao tentar baixar o arquivo do servidor.'}
+            
             args = {
                 "file": file
             }
@@ -23,7 +26,7 @@ class DownloadFiles:
                     return self.__response__(response)
 
         except Exception as e:
-            json_error = {'error': str(e), 'traceback': traceback.format_exc(), 'method': 'DownloadFiles.request.GET', 'rel_path': rel_path, 'route': self.routeDownload}
+            json_error = {'error': str(e), 'traceback': traceback.format_exc(), 'method': 'DownloadFiles.request.GET', 'file': file, 'route': self.routeDownload}
             LogRequest(f'{json_error}', 'cliente').request_log()
             return {'status': False, 'error': str(e), 'message': 'Erro ao tentar baixar o arquivo do servidor.'}
 

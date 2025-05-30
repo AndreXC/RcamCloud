@@ -10,7 +10,7 @@ class checkHash:
     def __init__(self):
         self.routeCheckHash = RoutesServer().routeCheckHash
 
-    def Request(self, filepath, rel_path):
+    def request(self, filepath, rel_path):
         try:
             file_hash, mensage = calculate_file_hash(filepath)
             if file_hash is None:
@@ -44,10 +44,10 @@ class checkHash:
         status = data.get('status')
         error_message = data.get('error')
         mensagem = data.get('message')
-        Match = data.get('match', None)
+        vmatch = data.get('match', None)
 
-        if Match is None:
+        if vmatch is None:
             LogRequest(error_message, 'cliente').request_log()
             return {'status': status, 'error': error_message, 'message': mensagem, 'match': None}
-        return {'status': status, 'error': error_message, 'message': mensagem, 'match': Match}
+        return {'status': status, 'error': error_message, 'message': mensagem, 'match': vmatch}
 

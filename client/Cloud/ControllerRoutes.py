@@ -88,5 +88,38 @@
 #             LogRequest(error_message, 'cliente').request_log()
 #             print(f"[ERRO AO DELETAR] {e}")
     
+     
+from .DELETE.DeleteArqOnServer.DeleteArq import DeleteArq  
+from .GET.DownloadFileOnServer.DownloadFilesOnServer import DownloadFiles
+from .POST.CheckHashRouteOnServer.CheckHash import checkHash
+from .POST.CreateDirectoryOnServer.CreateDirectory import CreateDirectoryApi
+from .POST.UploadOnServer.Upload import UploadFiles
+
+
+class RouteGroup:
+    def __init__(self):
+        self.routes = {}
+
+    def add(self, name, handler):
+        self.routes[name] = handler
+
+    def __getattr__(self, name):
+        return self.routes.get(name, None)
+
+
+class ControllerRoutes:
+    def __init__(self):
+        self.Get = RouteGroup()
+        self.Post = RouteGroup()
+        self.Delete = RouteGroup()
+
+        self.Get.DownloadFiles = DownloadFiles.request
+        self.Post.CreateDirectory = CreateDirectoryApi.request
+        self.Post.UploadFiles = UploadFiles.request
+        self.Post.CheckHash = checkHash.request
+        self.Delete.DeleteArq = DeleteArq.request
         
+
+
+
 

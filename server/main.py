@@ -77,7 +77,6 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 hash_registry = {}
 
-
 class FileHashRequest(BaseModel):
     filename: str  # agora é caminho relativo (ex: subpasta/arquivo.txt)
     sha256: str
@@ -224,6 +223,7 @@ def create_directory(data: DirectoryRequest):
                 "directory": data.path,
                 "message": f"Erro ao criar diretório: {str(e)}"
             }
+        )
     
 
 @app.delete("/delete/{filepath:path}")
@@ -258,7 +258,7 @@ def download_file(filepath: str):
     return FileResponse(file_path, filename=os.path.basename(file_path))
 
 
-@app.get("/list")
+@app.get("/DownloadAllArq")
 def list_files():
     file_list = []
     for root, _, files in os.walk(UPLOAD_DIR):
@@ -267,3 +267,4 @@ def list_files():
             rel_file = os.path.normpath(os.path.join(rel_dir, file))
             file_list.append(rel_file.replace("\\", "/"))
     return {"files": file_list}
+            
