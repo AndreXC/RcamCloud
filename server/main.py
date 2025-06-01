@@ -272,13 +272,12 @@
 
 
 from fastapi import FastAPI
-from Routes.DELETE.DeleteArq import ControllerDeleteArq 
-from Routes.GET.DownloadFiles import ControllerDownloadFiles
-from Routes.GET.DownloadAllFiles import ControllerDonwloadAllFiles
-from Routes.POST.CheckHash import ControllerHash
-from Routes.POST.CreateDir import ControllerCreateDir
-from Routes.POST.UploadFile import ControllerUpload
-
+from Routes.DELETE.DeleteArq.ControllerDeleteArq import router as ControllerDeleteArq
+from Routes.GET.DownloadFiles.ControllerDownloadFiles import router as ControllerDownloadFiles
+from Routes.GET.DownloadAllFiles.ControllerDonwloadAllFiles import router as ControllerDonwloadAllFiles
+from Routes.POST.CheckHash.ControllerHash import router as ControllerHash
+from Routes.POST.CreateDir.ControllerCreateDir import router as ControllerCreateDir
+from Routes.POST.UploadFile.ControllerUpload import router as ControllerUpload
 
 app = FastAPI()
 

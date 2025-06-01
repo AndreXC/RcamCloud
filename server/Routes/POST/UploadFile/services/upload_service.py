@@ -3,7 +3,7 @@ import hashlib
 from fastapi import UploadFile, status
 from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
-from server.Model.HashModel.Hashmodel import FileHash
+from Model.HashModel.Hashmodel import FileHash
 from sqlalchemy import insert
 
 UPLOAD_DIR = "storage"  # ajuste conforme necessário

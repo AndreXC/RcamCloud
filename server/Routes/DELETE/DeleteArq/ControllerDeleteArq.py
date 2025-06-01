@@ -3,7 +3,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from Postgres.GetSessionPostgres.GetSessionPostgres import get_db_session
-from services.delete_service import DeleteService
+from .services.delete_service import DeleteService
 
 
 router = APIRouter()

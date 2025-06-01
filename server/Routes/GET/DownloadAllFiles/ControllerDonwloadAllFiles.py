@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from service.list_files_service import ListFilesService
+from .service.list_files_service import ListFilesService
 
 router = APIRouter()
 

@@ -1,10 +1,9 @@
 # dependencies.py ou router.py
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from CreateSessionPostgres.session_manager import DatabaseSessionManager
+from ..CreateSessionPostgres.session_manager import DatabaseSessionManager
 from typing import AsyncGenerator
-from fastapi.responses import JSONResponse
-from fastapi import status
+from fastapi import HTTPException, status
 
 db_manager = DatabaseSessionManager()
 
@@ -13,12 +12,9 @@ async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
         async for session in db_manager.get_session():
             yield session
     except Exception as e:
-        return JSONResponse(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            content={
-                "status": False,
-                "match": None,
-                "error": "Hash SHA256 inválido.",
-                "message": "O campo 'sha256' deve ser uma string hexadecimal de 64 caracteres."
-            }
+        # Não pode retornar, deve lançar exceção para FastAPI tratar e enviar resposta
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Erro ao obter sessão do banco: {str(e)}"
         )
+

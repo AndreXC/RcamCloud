@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends
-from service.download_service import DownloadService
+from .service.download_service import DownloadService
 
 router = APIRouter()
 @router.get("/download/{filepath:path}")

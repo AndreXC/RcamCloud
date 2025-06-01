@@ -1,6 +1,6 @@
 from fastapi import APIRouter
-from schemas.directory_schema import DirectoryRequest
-from services.directory_service import DirectoryService
+from .schemas.directory_schema import DirectoryRequest
+from .services.directory_service import DirectoryService
 
 router = APIRouter()
 

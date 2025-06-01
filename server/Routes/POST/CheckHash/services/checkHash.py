@@ -2,8 +2,8 @@ from fastapi.responses import JSONResponse
 from fastapi import status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from schemas.FileHashRequestModel import FileHashRequest
-from server.Model.HashModel.Hashmodel import FileHash
+from ..schemas.FileHashRequestModel import FileHashRequest
+from Model.HashModel.Hashmodel import FileHash
 
 
 class HashChecker:
