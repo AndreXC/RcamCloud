@@ -98,12 +98,24 @@
 #             print(f"[ERRO DE REDE] {e}")
 
 
-from Observation.Obdirectory import ObserverDirectory
-from utils.ServerConfig.serverConf import serverConf
-if __name__ == "__main__":
-    config = serverConf()
-    print("Monitorando alterações no diretório:", config.folder)	
-    watcher = ObserverDirectory(config.folder)
-    watcher.run()
+# from Observation.Obdirectory import ObserverDirectory
+# from utils.ServerConfig.serverConf import serverConf
+
+
+# if __name__ == "__main__":
+#     config = serverConf()
+#     print("Monitorando alterações no diretório:", config.folder)	
+#     watcher = ObserverDirectory(config.folder)
+#     watcher.run()
+
+from WatchdogPath.ObserverPath import ObserverDirectory
+
+
+
+if __name__ == '__main__':
+    watcher = ObserverDirectory(directory_to_watch='./teste/')
+    watcher.run() 
+    
+
 
 

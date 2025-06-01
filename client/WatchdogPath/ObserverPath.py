@@ -2,8 +2,7 @@
 from watchdog.observers import Observer
 import os
 import time
-from RoutesCloud.routes import routes
-
+from .actions.actions import ActionsDirectory
 
         
 class ObserverDirectory:

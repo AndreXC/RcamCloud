@@ -1,7 +1,7 @@
 from watchdog.events import FileSystemEventHandler
-from ActionsExecute.actionsExecute import ActionsExecute
+from .ActionsExecute.actionsExecute import ActionsExecute
 
-class ObservadorDiretorio(FileSystemEventHandler):
+class ActionsDirectory(FileSystemEventHandler):
     def __init__(self, caminho_base):
         self.executor = ActionsExecute(caminho_base)
 

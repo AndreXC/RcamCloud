@@ -1,4 +1,4 @@
-from fila_arquivos.filaArquivos import FilaArquivosClient
+from ...fila_arquivos.filaArquivos import FilaArquivosClient
 
 class TratadorResposta:
     def __init__(self):

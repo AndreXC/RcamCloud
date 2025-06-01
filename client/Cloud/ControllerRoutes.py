@@ -112,12 +112,14 @@ class ControllerRoutes:
         self.Get = RouteGroup()
         self.Post = RouteGroup()
         self.Delete = RouteGroup()
+        
+        
 
-        self.Get.DownloadFiles = DownloadFiles.request
-        self.Post.CreateDirectory = CreateDirectoryApi.request
-        self.Post.UploadFiles = UploadFiles.request
-        self.Post.CheckHash = checkHash.request
-        self.Delete.DeleteArq = DeleteArq.request
+        self.Get.DownloadFiles = DownloadFiles().request
+        self.Post.CreateDirectory = CreateDirectoryApi().request
+        self.Post.UploadFiles = UploadFiles().request
+        self.Post.CheckHash = checkHash().request
+        self.Delete.DeleteArq = DeleteArq().request
         
 
 

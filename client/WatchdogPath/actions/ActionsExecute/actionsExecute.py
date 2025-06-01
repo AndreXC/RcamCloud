@@ -1,6 +1,6 @@
 import os
 from Cloud.ControllerRoutes import ControllerRoutes
-from ActionsResponse.actionsResponse import TratadorResposta
+from ..ActionsResponse.actionsResponse import TratadorResposta
 from watchdog.events import FileSystemEvent
 
 class ActionsExecute:
