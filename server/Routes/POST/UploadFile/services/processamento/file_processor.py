@@ -103,9 +103,9 @@ class FileProcessor:
                 return error
 
             content = await file.read()
-            if not content:
-                return self.__response__(status.HTTP_400_BAD_REQUEST, False, "Arquivo vazio.", "Conteúdo não lido.")
-
+            # if not content:
+            #     return self.__response__(status.HTTP_400_BAD_REQUEST, False, "Arquivo vazio.", "Conteúdo não lido.")
+            
             calculated_hash = hashlib.sha256(content).hexdigest()
             os.makedirs(os.path.dirname(file_path), exist_ok=True)
 
@@ -120,11 +120,11 @@ class FileProcessor:
             else:
                 await self._write_file(file_path, content)
                 await self._insert_file_hash(rel_path, calculated_hash)
-                return self.__response__(status.HTTP_201_CREATED, True, "", "Novo arquivo salvo.")
+                return self.__response__(status.HTTP_200_OK, True, "", "Novo arquivo salvo.")
         
         except Exception as e:
             await self.db.rollback()
-            return self.__response__(status.HTTP_500_INTERNAL_SERVER_ERROR, False, , "Erro inesperado no processamento do arquivo.")
+            return self.__response__(status.HTTP_500_INTERNAL_SERVER_ERROR, False, str(e), "Erro inesperado no processamento do arquivo.")
 
     def _validate_input(self, filename: str, File_hash: str):
         if not File_hash:
