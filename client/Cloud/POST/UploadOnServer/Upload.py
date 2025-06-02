@@ -17,35 +17,29 @@ class UploadFiles:
 
             if not rel_path:
                 return {'status': False, 'error': '', 'message': 'O caminho relativo do arquivo está vazio.'}
-            
-            # dataHash = self.checkHashRoute.request(filepath, rel_path)
-            # status = dataHash.get('status')
-            # if status:
-            # Amatch= dataHash.get('match') 
-            # if Amatch:
+
 
             file_hash = calculate_file_hash(filepath)
             if file_hash is None:
                 return {'status': False, 'error':'Erro ao calcular hash do arquivo', 'message': 'não foi possível calcular o hash do arquivo.'}  
            
            
-            with open(filepath, "rb") as f:
-                files = {
-                    'File': (rel_path, f)
-                }
-                data = {
-                    'File_Hash': file_hash
-                }
-                response = requests.post(self.routeUpload, files=files, data=data)
-                match response.status_code:
-                    case 200:
-                        return self.__response__(response)
-                    case 400:
-                        return self.__response__(response)
-                    case 500:
-                        return self.__response__(response)
-                    
+            files = {
+                'File': (rel_path, open(filepath, "rb"))
+            }
+            data = {
+                'File_Hash': file_hash
+            }
+            response = requests.post(self.routeUpload, files=files, data=data)
+            match response.status_code:
+                case 200:
+                    return self.__response__(response)
+                case 400:
+                    return self.__response__(response)
+                case 500:
+                    return self.__response__(response)
                 
+            
 
         except Exception as e:
             JsonErro = {'error': str(e), 'traceback': traceback.format_exc(), 'method': 'Upload.request.POST', 'filepath': filepath, 'rel_path': rel_path, 'route': self.routeUpload}

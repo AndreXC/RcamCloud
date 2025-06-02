@@ -101,10 +101,8 @@ class FileProcessor:
             error = self._validate_input(rel_path, File_hash)
             if error:
                 return error
-
+            
             content = await file.read()
-            # if not content:
-            #     return self.__response__(status.HTTP_400_BAD_REQUEST, False, "Arquivo vazio.", "Conteúdo não lido.")
             
             calculated_hash = hashlib.sha256(content).hexdigest()
             os.makedirs(os.path.dirname(file_path), exist_ok=True)
