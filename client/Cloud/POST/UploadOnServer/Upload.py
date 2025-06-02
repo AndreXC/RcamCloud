@@ -50,10 +50,9 @@ class UploadFiles:
         
     def __response__(self, response: requests.Response):
         data = response.json()
-        status_val = data.get("status", False)
-        error_message = data.get("error", "")
-        message = data.get("message", "")
-
+        status = data.get('status')
+        error_message = data.get('error')
+        mensagem = data.get('message')
 
         if not status:
             LogRequest(error_message, 'cliente').request_log()
