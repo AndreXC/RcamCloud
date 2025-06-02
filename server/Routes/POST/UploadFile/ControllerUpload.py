@@ -7,8 +7,9 @@ router = APIRouter()
 
 @router.post("/upload")
 async def upload_file(
-    file: UploadFile = File(...),
+    File: UploadFile = File(...),
+    File_Hash: str = None,
     db: AsyncSession = Depends(get_db_session)
 ):
     service = UploadService(db)
-    return await service.process_file(file)
+    return await service.process_file(File, File_Hash)

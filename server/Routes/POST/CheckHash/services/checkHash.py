@@ -15,11 +15,12 @@ class HashChecker:
 
     async def validate_input(self, filename: str, sha256: str):
         if not filename or not isinstance(filename, str):
+            print('teste')
             return JSONResponse(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 content={
                     "status": False,
-                    "match": None,
+                    "match": False,
                     "error": "Nome do arquivo inválido.",
                     "message": "O campo 'filename' deve ser uma string não vazia."
                 }
@@ -29,7 +30,7 @@ class HashChecker:
                 status_code=status.HTTP_400_BAD_REQUEST,
                 content={
                     "status": False,
-                    "match": None,
+                    "match": False,
                     "error": "Hash SHA256 inválido.",
                     "message": "O campo 'sha256' deve ser uma string hexadecimal de 64 caracteres."
                 }
@@ -50,8 +51,8 @@ class HashChecker:
                 return JSONResponse(
                     status_code=status.HTTP_404_NOT_FOUND,
                     content={
-                        "status": False,
-                        "match": None,
+                        "status": True,
+                        "match": False,
                         "error": "Arquivo não encontrado.",
                         "message": f"O arquivo '{info.filename}' não está registrado no servidor."
                     }
@@ -73,8 +74,9 @@ class HashChecker:
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 content={
                     "status": False,
-                    "match": None,
+                    "match": False,
                     "error": str(e),
                     "message": "Erro ao verificar hash."
                 }
             )
+
