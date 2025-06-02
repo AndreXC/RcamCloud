@@ -94,12 +94,12 @@ class FileProcessor:
     def __init__(self, db: AsyncSession):
         self.db = db
         self.StrErr = ''
-    async def handle_file(self, file: UploadFile, input_hash: str) -> dict:
+    async def handle_file(self, file: UploadFile, File_hash: str) -> dict:
         try:
             rel_path = file.filename.replace("\\", "/").lstrip("/")
             file_path = os.path.join(UPLOAD_DIR, rel_path)
 
-            error = self._validate_input(rel_path, input_hash)
+            error = self._validate_input(rel_path, File_hash)
             if error:
                 return error
 
@@ -139,10 +139,12 @@ class FileProcessor:
             await self.db.rollback()
             return self.__response__(status.HTTP_500_INTERNAL_SERVER_ERROR, False, self.StrErr, "Erro inesperado no processamento do arquivo.")
 
-    def _validate_input(self, filename: str, sha256: str):
+    def _validate_input(self, filename: str, File_hash: str):
+        if not File_hash:
+            return self.__response__(status.HTTP_400_BAD_REQUEST, False, "Hash SHA256 não fornecido.")
         if not filename or not isinstance(filename, str):
             return self.__response__(status.HTTP_400_BAD_REQUEST, False, "Nome do arquivo inválido.")
-        if not sha256 or not isinstance(sha256, str) or len(sha256) != 64:
+        if not File_hash or not isinstance(File_hash, str) or len(File_hash) != 64:
             return self.__response__(status.HTTP_400_BAD_REQUEST, False, "Hash SHA256 inválido.")
         return None
 

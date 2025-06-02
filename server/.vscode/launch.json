@@ -3,11 +3,11 @@
   "configurations": [
     {
       "name": "FastAPI Debug",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "module": "uvicorn",
       "args": [
-        "server.main:app",
+        "main:app",
         "--reload"
       ],
       "jinja": true,
