@@ -28,21 +28,23 @@ class UploadFiles:
             if file_hash is None:
                 return {'status': False, 'error':'Erro ao calcular hash do arquivo', 'message': 'não foi possível calcular o hash do arquivo.'}  
            
-            files = {
-                'File': (rel_path, open(filepath, "rb"))
-            }
-            data = {
-                'File_Hash': file_hash
-            }
-                                        
-            response = requests.post(self.routeUpload, files=files, data=data)
-            match response.status_code:
-                case 200:
-                    return self.__response__(response)
-                case 400:
-                    return self.__response__(response)
-                case 500:
-                    return self.__response__(response)
+           
+            with open(filepath, "rb") as f:
+                files = {
+                    'File': (rel_path, f)
+                }
+                data = {
+                    'File_Hash': file_hash
+                }
+                response = requests.post(self.routeUpload, files=files, data=data)
+                match response.status_code:
+                    case 200:
+                        return self.__response__(response)
+                    case 400:
+                        return self.__response__(response)
+                    case 500:
+                        return self.__response__(response)
+                    
                 
 
         except Exception as e:

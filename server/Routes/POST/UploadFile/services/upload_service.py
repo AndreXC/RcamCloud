@@ -268,7 +268,7 @@ class UploadService:
     async def process_file(self, File: UploadFile, File_Hash: str):
         try:
             result = await self.processor.handle_file(File, File_Hash)
-            return JSONResponse(status_code=result["status_code"], content=result["content"])
+            return JSONResponse(status_code=result["status_code"], content=result)
         except Exception as e:
             return JSONResponse(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

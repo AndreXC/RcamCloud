@@ -93,7 +93,6 @@ UPLOAD_DIR = "storage"
 class FileProcessor:
     def __init__(self, db: AsyncSession):
         self.db = db
-        self.StrErr = ''
     async def handle_file(self, file: UploadFile, File_hash: str) -> dict:
         try:
             rel_path = file.filename.replace("\\", "/").lstrip("/")
@@ -103,41 +102,29 @@ class FileProcessor:
             if error:
                 return error
 
-            self.StrErr = 'erro ao ler o arquivo.'    
             content = await file.read()
             if not content:
                 return self.__response__(status.HTTP_400_BAD_REQUEST, False, "Arquivo vazio.", "Conteúdo não lido.")
 
-            self.StrErr = 'erro ao calcular o hash do arquivo.'
             calculated_hash = hashlib.sha256(content).hexdigest()
-            self.StrErr = 'erro ao criar o diretório para o arquivo.'
             os.makedirs(os.path.dirname(file_path), exist_ok=True)
 
-            self.StrErr = 'erro ao verificar o arquivo existente.'
             existing = await self._get_existing_file(rel_path)
 
             if existing:
-                self.StrErr = 'erro ao comparar o hash do arquivo existente.'
                 if existing.hash == calculated_hash:
-                    self.StrErr = 'erro ao retornar a resposta.'
                     return self.__response__(status.HTTP_200_OK, True, "", "O arquivo já existe e é idêntico.")
-                self.StrErr = 'erro ao substituir o arquivo existente.'
                 await self._write_file(file_path, content)
-                self.StrErr = 'erro ao atualizar o hash do arquivo.'
                 await self._update_hash(rel_path, calculated_hash)
-                self.StrErr = 'erro ao retornar a resposta.'
                 return self.__response__(status.HTTP_200_OK, True, "", "Arquivo substituído. Hash atualizado.")
             else:
-                self.StrErr = 'erro ao salvar o novo arquivo.'
                 await self._write_file(file_path, content)
-                self.StrErr = 'erro ao inserir o hash do novo arquivo.'
                 await self._insert_file_hash(rel_path, calculated_hash)
-                self.StrErr = 'erro ao retornar a resposta.'
                 return self.__response__(status.HTTP_201_CREATED, True, "", "Novo arquivo salvo.")
         
         except Exception as e:
             await self.db.rollback()
-            return self.__response__(status.HTTP_500_INTERNAL_SERVER_ERROR, False, self.StrErr, "Erro inesperado no processamento do arquivo.")
+            return self.__response__(status.HTTP_500_INTERNAL_SERVER_ERROR, False, , "Erro inesperado no processamento do arquivo.")
 
     def _validate_input(self, filename: str, File_hash: str):
         if not File_hash:
