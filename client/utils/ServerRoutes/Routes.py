@@ -13,6 +13,9 @@ class RoutesServer:
         self.routeCreateDirectory = f"{self.server_url}/mkdir"
         self.routeCheckHash = f"{self.server_url}/verificar-hash"
         self.DownloadAllArq  = f"{self.server_url}/DownloadAllArq"
+
+        self.routeUploadSync  = f"{self.server_url}/UploadSync"
+        self.routeSyncFiles = f"{self.server_url}/SyncFiles"
         
 
 

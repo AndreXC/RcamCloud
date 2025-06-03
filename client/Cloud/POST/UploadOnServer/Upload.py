@@ -2,13 +2,11 @@ import traceback
 from utils.ServerRoutes.Routes import RoutesServer
 import requests
 from log.log import LogRequest
-from ..CheckHashRouteOnServer.CheckHash import checkHash
 from utils.CalcHash.calcHash import calculate_file_hash
 
 class UploadFiles:
     def __init__(self, ):
         self.routeUpload = RoutesServer().routeUpload
-        self.checkHashRoute:checkHash = checkHash()
     
     def request(self, filepath, rel_path):
         try:

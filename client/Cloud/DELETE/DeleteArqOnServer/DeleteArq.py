@@ -6,7 +6,7 @@ from log.log import LogRequest
  
 class DeleteArq:
     def __init__(self):
-        self.routeDelete = RoutesServer().routeDeletes
+        self.routeDelete = RoutesServer().routeDelete
     def request(self, rel_path):
         try:
             args = {

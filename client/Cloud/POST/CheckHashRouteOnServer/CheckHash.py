@@ -1,6 +1,6 @@
 
 import requests
-from utils.CalcHash.calcHash import calculate_file_hash
+from utils.CalcHash.calcHash import FileHasher
 import traceback
 from log.log import LogRequest
 from utils.ServerRoutes.Routes import RoutesServer
@@ -12,7 +12,7 @@ class checkHash:
 
     def request(self, filepath, rel_path):
         try:
-            file_hash, mensage = calculate_file_hash(filepath)
+            file_hash, mensage = FileHasher.hash_file(filepath)
             if file_hash is None:
                 LogRequest(mensage, 'cliente').request_log()
                 return {'status': False, 'error': mensage, 'message': 'Erro ao calcular hash do arquivo.'}

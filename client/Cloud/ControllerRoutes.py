@@ -94,7 +94,8 @@ from .GET.DownloadFileOnServer.DownloadFilesOnServer import DownloadFiles
 from .POST.CheckHashRouteOnServer.CheckHash import checkHash
 from .POST.CreateDirectoryOnServer.CreateDirectory import CreateDirectoryApi
 from .POST.UploadOnServer.Upload import UploadFiles
-
+from .POST.UpoloadSync.UploadSync import UploadSync
+from .POST.SyncFilesOnServer.SyncFile import SyncFiles
 
 class RouteGroup:
     def __init__(self):
@@ -112,16 +113,16 @@ class ControllerRoutes:
         self.Get = RouteGroup()
         self.Post = RouteGroup()
         self.Delete = RouteGroup()
-        
-        
 
         self.Get.DownloadFiles = DownloadFiles().request
         self.Post.CreateDirectory = CreateDirectoryApi().request
         self.Post.UploadFiles = UploadFiles().request
+        self.Post.UploadSync = UploadSync().request
         self.Post.CheckHash = checkHash().request
+        self.Post.SyncFiles = SyncFiles().request
         self.Delete.DeleteArq = DeleteArq().request
-        
 
+        
 
 
 

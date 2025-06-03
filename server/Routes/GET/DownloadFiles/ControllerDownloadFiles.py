@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter
 from .service.download_service import DownloadService
 
 router = APIRouter()
