@@ -3,22 +3,21 @@
 from WatchdogPath.actions.ActionsResponse.actionsResponse import TratadorResposta
 from Cloud.ControllerRoutes import ControllerRoutes
 from log.log import LogRequest
+from Path.GetPath.getpath import DirectoryPathClient
 
 
 class FilesSyncClient:
     def __init__(self):
+        self.client_path = DirectoryPathClient().get_path()
         self.ResponseHandler = TratadorResposta()
         self.ControllerRoutes=ControllerRoutes()
-        self.RouteUploadSync = self.ControllerRoutes.Get.DownloadFiles
-        self.RouteDownloadSync = self.ControllerRoutes.Post.UploadSync
-        self.SyncArquivos = self.ControllerRoutes.Post.SyncFiles
         
         
     def baixar_arquivo_Client(self, rel_path: str):
         try:
             response:dict = self.ControllerRoutes.Get.DownloadFiles(file=rel_path)
             if response.get('status'):
-                destino = self.client_base / rel_path
+                destino = self.client_path / rel_path
                 destino.parent.mkdir(parents=True, exist_ok=True)
                 with open(destino, 'wb') as arq:
                     arq.write(response.content)
@@ -29,12 +28,12 @@ class FilesSyncClient:
         
         
     def enviar_arquivo_server(self, rel_path: str):
-        caminho_local = self.client_base / rel_path
+        caminho_local = self.client_path / rel_path
         try:
             if not caminho_local.exists():
                 return {'status': False, 'error': 'Arquivo não encontrado.', 'message': f'O arquivo {rel_path} não existe no cliente.'}
 
-            response = self.ControllerRoutes.Post.UploadSync(file_path=caminho_local, rel_path=rel_path)
+            response:dict = self.ControllerRoutes.Post.UploadFiles(file_path=caminho_local, rel_path=rel_path)
             if response.get('status'):
                 return {'status': True, 'message': f'Arquivo {rel_path} enviado com sucesso.'}
             return {'status': False, 'error': response.get('error'), 'message': response.get('message')}
@@ -62,8 +61,6 @@ class FilesSyncClient:
                     self.enviar_arquivo_server(arquivo)
                     
             return {'status': True, 'message': 'Sincronização concluída com sucesso.'}
-                
-            
         except Exception as e:
             return {'status': False, 'error': str(e), 'message': 'Erro ao tentar sincronizar os arquivos.'}
         

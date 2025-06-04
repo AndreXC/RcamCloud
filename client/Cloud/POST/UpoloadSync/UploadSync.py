@@ -26,8 +26,6 @@ class UploadSync:
                     return self.__reponse__(response)
                 case 400:
                     return self.__reponse__(response)
-                case 404:
-                    return self.__reponse__(response)
                 case 500:
                     return self.__reponse__(response)
                 

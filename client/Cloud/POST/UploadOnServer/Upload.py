@@ -2,7 +2,7 @@ import traceback
 from utils.ServerRoutes.Routes import RoutesServer
 import requests
 from log.log import LogRequest
-from utils.CalcHash.calcHash import calculate_file_hash
+from utils.CalcHash.calcHash import FileHasher
 
 class UploadFiles:
     def __init__(self, ):
@@ -17,7 +17,7 @@ class UploadFiles:
                 return {'status': False, 'error': '', 'message': 'O caminho relativo do arquivo está vazio.'}
 
 
-            file_hash = calculate_file_hash(filepath)
+            file_hash = FileHasher.hash_file(filepath)
             if file_hash is None:
                 return {'status': False, 'error':'Erro ao calcular hash do arquivo', 'message': 'não foi possível calcular o hash do arquivo.'}  
            
